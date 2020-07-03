@@ -55,10 +55,16 @@ def alphabeta(board, depth, alpha, beta, isWhite):
                 break
         return value
 
+
+visited = {}
+
 # White is max, black is min, returns (move, value) tuple
 def alphabetaWithMove(board, depth, alpha, beta, isWhite):
     if depth == 0 or board.is_game_over():
-        return (None, evaluate(board))
+        boardFEN = board.fen()
+        if boardFEN not in visited:
+            visited[boardFEN] = evaluate(board)
+        return (None, visited[boardFEN])
     if isWhite:
         value = -float('inf')
         bestMove = None

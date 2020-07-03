@@ -1,5 +1,5 @@
 import chess
-from movepicker import getAIMove, alphabetaWithMove
+from movepicker import getAIMove, alphabetaWithMove, visited
 
 board = chess.Board()
 depth = 5
@@ -22,6 +22,7 @@ while True:
     if board.is_game_over():
         print('Human wins!')
         break
+    visited = {}
     aiMove = alphabetaWithMove(board, depth, -float('inf'), float('inf'), aiIsWhite)[0]
     board.push(aiMove)
     print("Blunder Bot played " + str(aiMove))

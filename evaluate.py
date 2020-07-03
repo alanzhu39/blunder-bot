@@ -8,6 +8,9 @@ def evaluate(board):
     weights[material] = 2
     weights[badPawns] = 1
     weights[centerPawns] = 0.8
+    weights[knights] = 0.9
+    weights[bishops] = 0.9
+    weights[rooks] = 0.9
     for func in weights:
         evaluation += weights[func] * func(board)
     return evaluation
@@ -72,3 +75,68 @@ def centerPawns(board):
     result += len(board.pieces(chess.PAWN, chess.WHITE).intersection(chess.BB_CENTER))
     result -= len(board.pieces(chess.PAWN, chess.BLACK).intersection(chess.BB_CENTER))
     return result
+
+# Various knight evaluations
+def knights(board):
+    result = 0
+    whiteKnights = board.pieces(chess.KNIGHT, chess.WHITE)
+    blackKnights = board.pieces(chess.KNIGHT, chess.BLACK)
+    whitePawns = board.pieces(chess.PAWN, chess.WHITE)
+    blackPawns = board.pieces(chess.PAWN, chess.WHITE)
+    # Penalty as pawns disappear
+    result -= len(whiteKnights) * 0.05 * (8 - len(whitePawns))
+    result += len(blackKnights) * 0.05 * (8 - len(blackPawns))
+    # Pawn defender bonus
+    for sq in whiteKnights:
+        result += 0.5 * len(board.attackers(chess.WHITE, sq).intersection(whitePawns))
+    for sq in blackKnights:
+        result -= 0.5 * len(board.attackers(chess.BLACK, sq).intersection(blackPawns))
+    # Knight mobility
+    for sq in whiteKnights:
+        for attacking in board.attacks(sq):
+            if len(board.attackers(chess.BLACK, attacking).intersection(blackPawns)) == 0:
+                result += 0.1
+    for sq in blackKnights:
+        for attacking in board.attacks(sq):
+            if len(board.attackers(chess.WHITE, attacking).intersection(whitePawns)) == 0:
+                result -= 0.1
+    return result
+
+# Various bishop evaluations
+def bishops(board):
+    result = 0
+    whiteBishops = board.pieces(chess.BISHOP, chess.WHITE)
+    blackBishops = board.pieces(chess.BISHOP, chess.BLACK)
+    whitePawns = board.pieces(chess.PAWN, chess.WHITE)
+    blackPawns = board.pieces(chess.PAWN, chess.WHITE)
+    # Bad bishop: bishop mobility restricted by own pawn
+    for sq in whiteBishops:
+        if chess.square_rank(sq) > 6:
+            continue
+        blockers = board.attacks(sq).intersection( \
+            chess.BB_RANKS[chess.square_rank(sq) + 1:].intersection( \
+            chess.BB_FILES[max(chess.square_file(sq) - 2, 0):min(chess.square_file(sq) + 3, 8)]))
+        result -= 0.6 * len(blockers.intersection(whitePawns))
+    for sq in blackBishops:
+        if chess.square_rank(sq) < 1:
+            continue
+        blockers = board.attacks(sq).intersection( \
+            chess.BB_RANKS[chess.square_rank(sq) - 1:].intersection( \
+            chess.BB_FILES[max(chess.square_file(sq) - 2, 0):min(chess.square_file(sq) + 3, 8)]))
+        result += 0.1 * len(blockers.intersection(blackPawns))
+    # Bishop pair bonus
+    if len(whiteBishops == 2):
+        result += 0.5
+    if len(blackBishops == 2):
+        result -= 0.5
+    return result
+
+# Various rook evaluations
+def rooks(board):
+    result = 0
+    whiteRooks = board.pieces(chess.ROOK, chess.WHITE)
+    blackRooks = board.pieces(chess.ROOK, chess.BLACK)
+    # Increasing value as pawns disappear
+    result += len(whiteRooks) * 0.05 * (8 - len(board.pieces(chess.PAWN, chess.WHITE)))
+    result -= len(blackRooks) * 0.05 * (8 - len(board.pieces(chess.PAWN, chess.BLACK)))
+    
