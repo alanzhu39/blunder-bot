@@ -10,7 +10,9 @@ def evaluate(board):
     weights[centerPawns] = 0.8
     weights[knights] = 0.9
     weights[bishops] = 0.9
-    weights[rooks] = 0.9
+    weights[rooks] = 0.75
+    weights[queens] = 0.9
+    weights[kings] = 0.8
     for func in weights:
         evaluation += weights[func] * func(board)
     return evaluation
@@ -182,3 +184,11 @@ def rooks(board):
     if defended:
         result -= 0.2
     return result
+
+# Various queen evaluations
+def queens(board):
+    return 0
+
+# Various king evaluations
+def kings(board):
+    return 0
