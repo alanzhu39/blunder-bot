@@ -136,7 +136,49 @@ def rooks(board):
     result = 0
     whiteRooks = board.pieces(chess.ROOK, chess.WHITE)
     blackRooks = board.pieces(chess.ROOK, chess.BLACK)
+    whitePawns = board.pieces(chess.PAWN, chess.WHITE)
+    blackPawns = board.pieces(chess.PAWN, chess.WHITE)
     # Increasing value as pawns disappear
-    result += len(whiteRooks) * 0.05 * (8 - len(board.pieces(chess.PAWN, chess.WHITE)))
-    result -= len(blackRooks) * 0.05 * (8 - len(board.pieces(chess.PAWN, chess.BLACK)))
-    
+    result += len(whiteRooks) * 0.05 * (8 - len(whitePawns))
+    result -= len(blackRooks) * 0.05 * (8 - len(blackPawns))
+    # Open and semi-open file bonus
+    for sq in whiteRooks:
+        if len(chess.square_file(sq).intersection(whitePawns)) == 0:
+            result += 0.15
+            if len(chess.square_file(sq).intersection(blackPawns)) == 0:
+                result += 0.25
+    for sq in blackRooks:
+        if len(chess.square_file(sq).intersection(blackPawns)) == 0:
+            result -= 0.15
+            if len(chess.square_file(sq).intersection(whitePawns)) == 0:
+                result -= 0.25
+    # 7th rank bonus
+    for sq in whiteRooks:
+        if chess.square_rank(sq) == chess.BB_RANK_7:
+            result += 0.3
+    for sq in blackRooks:
+        if chess.square_rank(sq) == chess.BB_RANK_2:
+            result -= 0.3
+    # Enemy queen in same file bonus
+    whiteQueen = board.pieces(chess.QUEEN, chess.WHITE)
+    blackQueen = board.pieces(chess.QUEEN, chess.BLACK)
+    for sq in blackQueen:
+        result += len(chess.square_file(sq).intersection(whiteRooks)) * 0.1
+    for sq in whiteQueen:
+        result -= len(chess.square_file(sq).intersection(blackRooks)) * 0.1
+    # Rooks defending each other bonus
+    defended = False
+    for sq in whiteRooks:
+        if len(board.attacks(sq).intersection(whiteRooks)) > 0:
+            defended = True
+            break
+    if defended:
+        result += 0.2
+    defended = False
+    for sq in blackRooks:
+        if len(board.attacks(sq).intersection(blackRooks)) > 0:
+            defended = True
+            break
+    if defended:
+        result -= 0.2
+    return result
