@@ -1,6 +1,7 @@
 import chess
 from evaluate import evaluate
 
+# Performs action selection by doing alphabeta search on all children
 def getAIMove(board, depth, isWhite):
     if isWhite:
         bestMove = None
@@ -27,7 +28,7 @@ def getAIMove(board, depth, isWhite):
             board.pop()
         return bestMove
 
-# White is max, black is min
+# White is max, black is min, returns (move, value) tuple
 def alphabeta(board, depth, alpha, beta, isWhite):
     if depth == 0 or board.is_game_over():
         return evaluate(board)
@@ -53,3 +54,34 @@ def alphabeta(board, depth, alpha, beta, isWhite):
             if beta <= alpha:
                 break
         return value
+
+# White is max, black is min, returns (move, value) tuple
+def alphabetaWithMove(board, depth, alpha, beta, isWhite):
+    if depth == 0 or board.is_game_over():
+        return evaluate(board)
+    if isWhite:
+        value = -float('inf')
+        bestMove = None
+        copy = [move for move in board.legal_moves]
+        for move in copy:
+            board.push(move)
+            value = max(value, alphabeta(board, depth - 1, alpha, beta, False)[1])
+            board.pop()
+            alpha = max(alpha, value)
+            if alpha > beta:
+                bestMove = move
+                break
+        return (bestMove, value)
+    else:
+        value = float('inf')
+        bestMove = None
+        copy = [move for move in board.legal_moves]
+        for move in copy:
+            board.push(move)
+            value = min(value, alphabeta(board, depth - 1, alpha, beta, True)[1])
+            board.pop()
+            beta = min(beta, value)
+            if beta < alpha:
+                bestMove = move
+                break
+        return (bestMove, value)
