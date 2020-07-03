@@ -116,9 +116,11 @@ def bishops(board):
         if chess.square_rank(sq) > 6:
             continue
         ranks = 0
-        [ranks |= int(rank) for rank in chess.BB_RANKS[chess.square_rank(sq) + 1:]]
+        for rank in chess.BB_RANKS[chess.square_rank(sq) + 1:]:
+            ranks = ranks | int(rank)
         files = 0
-        [files |= int(file) for file in chess.BB_FILES[max(chess.square_file(sq) - 2, 0):min(chess.square_file(sq) + 3, 8)]]
+        for file in chess.BB_FILES[max(chess.square_file(sq) - 2, 0):min(chess.square_file(sq) + 3, 8)]:
+            files = ranks | int(file)
         blockers = board.attacks(sq).intersection( \
             chess.SquareSet(ranks).intersection(chess.SquareSet(files)))
         result -= 0.1 * len(blockers.intersection(whitePawns))
@@ -126,16 +128,18 @@ def bishops(board):
         if chess.square_rank(sq) < 1:
             continue
         ranks = 0
-        [ranks |= int(rank) for rank in chess.BB_RANKS[:chess.square_rank(sq)]]
+        for rank in chess.BB_RANKS[:chess.square_rank(sq) - 1]:
+            ranks = ranks | int(rank)
         files = 0
-        [files |= int(file) for file in chess.BB_FILES[max(chess.square_file(sq) - 2, 0):min(chess.square_file(sq) + 3, 8)]]
+        for file in chess.BB_FILES[max(chess.square_file(sq) - 2, 0):min(chess.square_file(sq) + 3, 8)]:
+            files = ranks | int(file)
         blockers = board.attacks(sq).intersection( \
             chess.SquareSet(ranks).intersection(chess.SquareSet(files)))
         result += 0.1 * len(blockers.intersection(blackPawns))
     # Bishop pair bonus
-    if len(whiteBishops == 2):
+    if len(whiteBishops) == 2:
         result += 0.5
-    if len(blackBishops == 2):
+    if len(blackBishops) == 2:
         result -= 0.5
     return result
 
@@ -151,14 +155,14 @@ def rooks(board):
     result -= len(blackRooks) * 0.05 * (8 - len(blackPawns))
     # Open and semi-open file bonus
     for sq in whiteRooks:
-        if len(chess.square_file(sq).intersection(whitePawns)) == 0:
+        if len(whitePawns.intersection(chess.square_file(sq))) == 0:
             result += 0.15
-            if len(chess.square_file(sq).intersection(blackPawns)) == 0:
+            if len(blackPawns.intersection(chess.square_file(sq))) == 0:
                 result += 0.25
     for sq in blackRooks:
-        if len(chess.square_file(sq).intersection(blackPawns)) == 0:
+        if len(blackPawns.intersection(chess.square_file(sq))) == 0:
             result -= 0.15
-            if len(chess.square_file(sq).intersection(whitePawns)) == 0:
+            if len(whitePawns.intersection(chess.square_file(sq))) == 0:
                 result -= 0.25
     # 7th rank bonus
     for sq in whiteRooks:
@@ -171,20 +175,20 @@ def rooks(board):
     whiteQueen = board.pieces(chess.QUEEN, chess.WHITE)
     blackQueen = board.pieces(chess.QUEEN, chess.BLACK)
     for sq in blackQueen:
-        result += len(chess.square_file(sq).intersection(whiteRooks)) * 0.1
+        result += len(whiteRooks.intersection(chess.square_file(sq))) * 0.1
     for sq in whiteQueen:
-        result -= len(chess.square_file(sq).intersection(blackRooks)) * 0.1
+        result -= len(blackRooks.intersection(chess.square_file(sq))) * 0.1
     # Rooks defending each other bonus
     defended = False
     for sq in whiteRooks:
-        if len(board.attacks(sq).intersection(whiteRooks)) > 0:
+        if len(whiteRooks.intersection(board.attacks(sq))) > 0:
             defended = True
             break
     if defended:
         result += 0.2
     defended = False
     for sq in blackRooks:
-        if len(board.attacks(sq).intersection(blackRooks)) > 0:
+        if len(blackRooks.intersection(board.attacks(sq))) > 0:
             defended = True
             break
     if defended:

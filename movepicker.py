@@ -67,27 +67,27 @@ def alphabetaWithMove(board, depth, alpha, beta, isWhite):
         return (None, visited[boardFEN])
     if isWhite:
         value = -float('inf')
-        bestMove = None
+        lastMove = None
         copy = [move for move in board.legal_moves]
         for move in copy:
             board.push(move)
+            lastMove = move
             value = max(value, alphabetaWithMove(board, depth - 1, alpha, beta, False)[1])
             board.pop()
             alpha = max(alpha, value)
             if alpha > beta:
-                bestMove = move
                 break
-        return (bestMove, value)
+        return (lastMove, value)
     else:
         value = float('inf')
-        bestMove = None
+        lastMove = None
         copy = [move for move in board.legal_moves]
         for move in copy:
             board.push(move)
+            lastMove = move
             value = min(value, alphabetaWithMove(board, depth - 1, alpha, beta, True)[1])
             board.pop()
             beta = min(beta, value)
             if beta < alpha:
-                bestMove = move
                 break
-        return (bestMove, value)
+        return (lastMove, value)
