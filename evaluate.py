@@ -5,12 +5,12 @@ def evaluate(board):
     evaluation = 0
     weights = {}
     weights[gameOver] = 1
-    weights[material] = 2
-    weights[badPawns] = 1
-    weights[centerPawns] = 0.8
-    weights[knights] = 0.9
-    weights[bishops] = 0.9
-    weights[rooks] = 0.75
+    weights[material] = 0.15
+    weights[badPawns] = 0.5
+    weights[centerPawns] = 1
+    weights[knights] = 0.5
+    weights[bishops] = 0.5
+    weights[rooks] = 0.5
     weights[queens] = 0.9
     weights[kings] = 0.8
     for func in weights:

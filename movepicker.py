@@ -28,9 +28,14 @@ def getAIMove(board, depth, isWhite):
             board.pop()
         return bestMove
 
+visited = {}
+
 # White is max, black is min, returns (move, value) tuple
 def alphabeta(board, depth, alpha, beta, isWhite):
     if depth == 0 or board.is_game_over():
+        boardFEN = board.fen()
+        if boardFEN not in visited:
+            visited[boardFEN] = evaluate(board)
         return evaluate(board)
     if isWhite:
         value = -float('inf')
@@ -54,9 +59,6 @@ def alphabeta(board, depth, alpha, beta, isWhite):
             if beta <= alpha:
                 break
         return value
-
-
-visited = {}
 
 # White is max, black is min, returns (move, value) tuple
 def alphabetaWithMove(board, depth, alpha, beta, isWhite):
