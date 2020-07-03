@@ -2,7 +2,7 @@ import chess
 from movepicker import getAIMove
 
 board = chess.Board()
-depth = 7
+depth = 5
 aiIsWhite = False
 
 side = input("Enter AI side: ")
@@ -16,7 +16,7 @@ while True:
     humanMove = input("Please enter your move: ")
     if humanMove == 'exit':
         exit()
-    while humanMove == 'print':
+    while humanMove == 'print' or humanMove == 'exit':
         if humanMove == 'exit':
             exit()
         print(board)

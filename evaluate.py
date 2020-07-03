@@ -69,6 +69,6 @@ def badPawns(board):
 # 1 point for each pawn in the center
 def centerPawns(board):
     result = 0
-    result += len(chess.BB_CENTER.intersection(board.pieces(chess.PAWN, chess.WHITE)))
-    result -= len(chess.BB_CENTER.intersection(board.pieces(chess.PAWN, chess.BLACK)))
+    result += len(board.pieces(chess.PAWN, chess.WHITE).intersection(chess.BB_CENTER))
+    result -= len(board.pieces(chess.PAWN, chess.BLACK).intersection(chess.BB_CENTER))
     return result
