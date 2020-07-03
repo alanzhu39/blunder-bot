@@ -1,4 +1,31 @@
+import chess
 from evaluate import evaluate
+
+def getAIMove(board, depth, isWhite):
+    if isWhite:
+        bestMove = None
+        bestVal = -float('inf')
+        copy = [move for move in board.legal_moves]
+        for move in copy:
+            board.push(move)
+            search = alphabeta(board, depth - 1, -float('inf'), float('inf'), False)
+            if search > bestVal:
+                bestVal = search
+                bestMove = move
+            board.pop()
+        return bestMove
+    else:
+        bestVal = float('inf')
+        bestMove = None
+        copy = [move for move in board.legal_moves]
+        for move in copy:
+            board.push(move)
+            search = alphabeta(board, depth - 1, -float('inf'), float('inf'), True)
+            if search < bestVal:
+                bestVal = search
+                bestMove = move
+            board.pop()
+        return bestMove
 
 # White is max, black is min
 def alphabeta(board, depth, alpha, beta, isWhite):
@@ -6,7 +33,7 @@ def alphabeta(board, depth, alpha, beta, isWhite):
         return evaluate(board)
     if isWhite:
         value = -float('inf')
-        copy = board.legal_moves.copy()
+        copy = [move for move in board.legal_moves]
         for move in copy:
             board.push(move)
             value = max(value, alphabeta(board, depth - 1, alpha, beta, False))
@@ -17,7 +44,7 @@ def alphabeta(board, depth, alpha, beta, isWhite):
         return value
     else:
         value = float('inf')
-        copy = board.legal_moves.copy()
+        copy = [move for move in board.legal_moves]
         for move in copy:
             board.push(move)
             value = min(value, alphabeta(board, depth - 1, alpha, beta, True))

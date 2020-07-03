@@ -1,30 +1,34 @@
 import chess
-from movepicker import alphabeta
+from movepicker import getAIMove
 
 board = chess.Board()
-depth = 3
+depth = 7
 aiIsWhite = False
 
 side = input("Enter AI side: ")
 aiIsWhite = side == 'white'
 if aiIsWhite:
-    aiMove = alphabeta(board, depth, -float('inf'), float('inf'), True)
+    aiMove = getAIMove(board, depth, True)
+    print("Blunder Bot played " + str(aiMove))
     board.push(aiMove)
 
 while True:
     humanMove = input("Please enter your move: ")
-    while humanMove not in board.legal_moves:
+    if humanMove == 'exit':
+        exit()
+    while humanMove == 'print':
         if humanMove == 'exit':
-            break
-        if humanMove == 'print':
-            print(board)
+            exit()
+        print(board)
         humanMove = input("Please enter your move: ")
+    humanMove = chess.Move.from_uci(humanMove)
     board.push(humanMove)
     if board.is_game_over():
         print('Human wins!')
         break
-    aiMove = alphabeta(board, depth, -float('inf'), float('inf'), aiIsWhite)
+    aiMove = getAIMove(board, depth, aiIsWhite)
     board.push(aiMove)
+    print("Blunder Bot played " + str(aiMove))
     if board.is_game_over():
         print('AI wins!')
         break
