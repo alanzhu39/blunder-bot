@@ -115,16 +115,22 @@ def bishops(board):
     for sq in whiteBishops:
         if chess.square_rank(sq) > 6:
             continue
+        ranks = 0
+        [ranks |= int(rank) for rank in chess.BB_RANKS[chess.square_rank(sq) + 1:]]
+        files = 0
+        [files |= int(file) for file in chess.BB_FILES[max(chess.square_file(sq) - 2, 0):min(chess.square_file(sq) + 3, 8)]]
         blockers = board.attacks(sq).intersection( \
-            chess.BB_RANKS[chess.square_rank(sq) + 1:].intersection( \
-            chess.BB_FILES[max(chess.square_file(sq) - 2, 0):min(chess.square_file(sq) + 3, 8)]))
-        result -= 0.6 * len(blockers.intersection(whitePawns))
+            chess.SquareSet(ranks).intersection(chess.SquareSet(files)))
+        result -= 0.1 * len(blockers.intersection(whitePawns))
     for sq in blackBishops:
         if chess.square_rank(sq) < 1:
             continue
+        ranks = 0
+        [ranks |= int(rank) for rank in chess.BB_RANKS[:chess.square_rank(sq)]]
+        files = 0
+        [files |= int(file) for file in chess.BB_FILES[max(chess.square_file(sq) - 2, 0):min(chess.square_file(sq) + 3, 8)]]
         blockers = board.attacks(sq).intersection( \
-            chess.BB_RANKS[chess.square_rank(sq) - 1:].intersection( \
-            chess.BB_FILES[max(chess.square_file(sq) - 2, 0):min(chess.square_file(sq) + 3, 8)]))
+            chess.SquareSet(ranks).intersection(chess.SquareSet(files)))
         result += 0.1 * len(blockers.intersection(blackPawns))
     # Bishop pair bonus
     if len(whiteBishops == 2):
