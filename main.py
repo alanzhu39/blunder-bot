@@ -11,16 +11,12 @@ if aiIsWhite:
     aiMove = getAIMove(board, depth, True)
     print("Blunder Bot played " + str(aiMove))
     board.push(aiMove)
+    print(board)
 
 while True:
     humanMove = input("Please enter your move: ")
     if humanMove == 'exit':
         exit()
-    while humanMove == 'print' or humanMove == 'exit':
-        if humanMove == 'exit':
-            exit()
-        print(board)
-        humanMove = input("Please enter your move: ")
     humanMove = chess.Move.from_uci(humanMove)
     board.push(humanMove)
     if board.is_game_over():
@@ -29,6 +25,7 @@ while True:
     aiMove = getAIMove(board, depth, aiIsWhite)
     board.push(aiMove)
     print("Blunder Bot played " + str(aiMove))
+    print(board)
     if board.is_game_over():
         print('AI wins!')
         break
