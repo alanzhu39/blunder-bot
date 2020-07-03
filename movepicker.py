@@ -58,14 +58,14 @@ def alphabeta(board, depth, alpha, beta, isWhite):
 # White is max, black is min, returns (move, value) tuple
 def alphabetaWithMove(board, depth, alpha, beta, isWhite):
     if depth == 0 or board.is_game_over():
-        return evaluate(board)
+        return (None, evaluate(board))
     if isWhite:
         value = -float('inf')
         bestMove = None
         copy = [move for move in board.legal_moves]
         for move in copy:
             board.push(move)
-            value = max(value, alphabeta(board, depth - 1, alpha, beta, False)[1])
+            value = max(value, alphabetaWithMove(board, depth - 1, alpha, beta, False)[1])
             board.pop()
             alpha = max(alpha, value)
             if alpha > beta:
@@ -78,7 +78,7 @@ def alphabetaWithMove(board, depth, alpha, beta, isWhite):
         copy = [move for move in board.legal_moves]
         for move in copy:
             board.push(move)
-            value = min(value, alphabeta(board, depth - 1, alpha, beta, True)[1])
+            value = min(value, alphabetaWithMove(board, depth - 1, alpha, beta, True)[1])
             board.pop()
             beta = min(beta, value)
             if beta < alpha:
