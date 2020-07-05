@@ -2,7 +2,7 @@ import chess
 from movepicker import getAIMove, alphabetaWithMove, visited
 
 board = chess.Board()
-depth = 5
+depth = 4
 aiIsWhite = False
 
 side = input("Enter AI side: ")
@@ -23,7 +23,7 @@ while True:
         print('Human wins!')
         break
     visited = {}
-    aiMove = alphabetaWithMove(board, depth, -float('inf'), float('inf'), True)[0]
+    aiMove = alphabetaWithMove(board, depth, -float('inf'), float('inf'), aiIsWhite)[0]
     board.push(aiMove)
     print("Blunder Bot played " + str(aiMove))
     print(board)

@@ -91,7 +91,7 @@ def alphabetaWithMove(board, depth, alpha, beta, isWhite):
             newVal = alphabetaWithMove(board, depth - 1, alpha, beta, True)[1]
             if newVal < value:
                 bestMove = move
-            value = min(value, )
+            value = min(value, newVal)
             board.pop()
             beta = min(beta, value)
             if beta < alpha:
