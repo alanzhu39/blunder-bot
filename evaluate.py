@@ -13,6 +13,7 @@ def evaluate(board):
     weights[rooks] = 0.5
     weights[queens] = 0.9
     weights[kings] = 0.8
+    weights[hangers] = 1
     for func in weights:
         evaluation += weights[func] * func(board)
     return evaluation
@@ -202,3 +203,22 @@ def queens(board):
 # Various king evaluations
 def kings(board):
     return 0
+
+# Hanging pieces penalties
+def hangers(board):
+    pieces = [chess.PAWN, chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN]
+    values = [1, 3, 3, 5, 9]
+    pieceValues = dict(zip(pieces, values))
+    whitePieces = chess.SquareSet()
+    blackPieces = chess.SqareSet()
+    for p in pieces:
+        whitePieces = whitePieces.union(board.pieces(p, chess.WHITE))
+        blackPieces = blackPieces.union(board.pieces(p, chess.BLACK))
+    result = 0
+    for sq in whitePieces:
+        if len(board.attackers(chess.BLACK, sq)) > 1 and len(board.attackers(chess.WHITE,sq)) == 0:
+            result -= pieceValues[board.piece_type_at(sq)]
+    for sq in blackPieces:
+        if len(board.attackers(chess.BLACK, sq)) == 0 and len(board.attackers(chess.WHITE,sq)) > 1:
+            result += pieceValues[board.piece_type_at(sq)]
+    return result
