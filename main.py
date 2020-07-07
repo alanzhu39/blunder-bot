@@ -14,7 +14,7 @@ if aiIsWhite:
     start = time.perf_counter()
     aiMove = alphabetaWithMove(board, depth, -float('inf'), float('inf'), True)[0]
     stop = time.perf_counter()
-    print("Blunder Bot played " + str(aiMove) + " in " str(stop - start) " seconds."))
+    print("Blunder Bot played " + str(aiMove) + " in " + str(stop - start) + " seconds.")
     board.push(aiMove)
     print(board)
 
@@ -31,7 +31,7 @@ while True:
     start = time.perf_counter()
     aiMove = alphabetaWithMove(board, depth, -float('inf'), float('inf'), aiIsWhite)[0]
     stop = time.perf_counter()
-    print("Blunder Bot played " + str(aiMove) + " in " str(stop - start) " seconds.")
+    print("Blunder Bot played " + str(aiMove) + " in " + str(stop - start) + " seconds.")
     board.push(aiMove)
     print("Blunder Bot played " + str(aiMove))
     print(board)
