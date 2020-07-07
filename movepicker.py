@@ -63,6 +63,7 @@ def alphabeta(board, depth, alpha, beta, isWhite):
 # White is max, black is min, returns (move, value) tuple
 def alphabetaWithMove(board, depth, alpha, beta, isWhite):
     boardFEN = board.fen()
+    toggle = False
     if depth == 0 or board.is_game_over():
         if boardFEN not in visited:
             visited[boardFEN] = evaluate(board)
@@ -73,7 +74,7 @@ def alphabetaWithMove(board, depth, alpha, beta, isWhite):
         copy = [move for move in board.legal_moves]
         for move in copy:
             board.push(move)
-            if boardFEN in visited:
+            if boardFEN in visited and toggle:
                 newVal = visited[boardFEN]
             else:
                 newVal = alphabetaWithMove(board, depth - 1, alpha, beta, False)[1]
@@ -91,7 +92,7 @@ def alphabetaWithMove(board, depth, alpha, beta, isWhite):
         copy = [move for move in board.legal_moves]
         for move in copy:
             board.push(move)
-            if boardFEN in visited:
+            if boardFEN in visited and toggle:
                 newVal = visited[boardFEN]
             else:
                 newVal = alphabetaWithMove(board, depth - 1, alpha, beta, True)[1]
