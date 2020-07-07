@@ -2,7 +2,7 @@ import chess
 from movepicker import getAIMove, alphabetaWithMove, visited
 
 board = chess.Board()
-depth = 4
+depth = 5
 aiIsWhite = False
 
 side = input("Enter AI side: ")
