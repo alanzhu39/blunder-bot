@@ -1,15 +1,20 @@
 import chess
+import time
 from movepicker import getAIMove, alphabetaWithMove, visited
 
 board = chess.Board()
-depth = 5
+depth = 4
 aiIsWhite = False
+start = 0
+stop = 0
 
 side = input("Enter AI side: ")
 aiIsWhite = side == 'white'
 if aiIsWhite:
+    start = time.perf_counter()
     aiMove = alphabetaWithMove(board, depth, -float('inf'), float('inf'), True)[0]
-    print("Blunder Bot played " + str(aiMove))
+    stop = time.perf_counter()
+    print("Blunder Bot played " + str(aiMove) + " in " str(stop - start) " seconds."))
     board.push(aiMove)
     print(board)
 
@@ -23,7 +28,10 @@ while True:
         print('Human wins!')
         break
     visited = {}
+    start = time.perf_counter()
     aiMove = alphabetaWithMove(board, depth, -float('inf'), float('inf'), aiIsWhite)[0]
+    stop = time.perf_counter()
+    print("Blunder Bot played " + str(aiMove) + " in " str(stop - start) " seconds.")
     board.push(aiMove)
     print("Blunder Bot played " + str(aiMove))
     print(board)
