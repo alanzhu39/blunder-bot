@@ -12,7 +12,7 @@ side = input("Enter AI side: ")
 aiIsWhite = side == 'white'
 if aiIsWhite:
     start = time.perf_counter()
-    aiMove = alphabetaWithMove(board, depth, -float('inf'), float('inf'), True)[0]
+    aiMove = alphabetaWithMove(board, depth, -float('inf'), float('inf'), True, True)[0]
     stop = time.perf_counter()
     print("Blunder Bot played " + str(aiMove) + " in " + str(stop - start) + " seconds.")
     board.push(aiMove)
@@ -29,7 +29,7 @@ while True:
         break
     visited = {}
     start = time.perf_counter()
-    aiMove = alphabetaWithMove(board, depth, -float('inf'), float('inf'), aiIsWhite)[0]
+    aiMove = alphabetaWithMove(board, depth, -float('inf'), float('inf'), aiIsWhite, True)[0]
     stop = time.perf_counter()
     print("Blunder Bot played " + str(aiMove) + " in " + str(stop - start) + " seconds.")
     board.push(aiMove)

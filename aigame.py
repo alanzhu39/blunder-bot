@@ -67,9 +67,8 @@ whiteTimes = []
 
 while True:
     visited = {}
-    repeats.add(board.fen())
     start = time.perf_counter()
-    aiMove = alphabetaWithMove(board, depth, -float('inf'), float('inf'), isWhite, not isWhite)[0]
+    aiMove = alphabetaWithMove(board, depth, -float('inf'), float('inf'), isWhite, isWhite)[0]
     stop = time.perf_counter()
     side = "White" if isWhite else "Black"
     if isWhite:
@@ -85,5 +84,5 @@ while True:
     elif len(board.move_stack) >= 30:
         break
 
-print("Average white time (not using visited): " + str(sum(whiteTimes)/len(whiteTimes)))
-print("Average black time (using visited): " + str(sum(blackTimes)/len(blackTimes)))
+print("Average white time (using visited): " + str(sum(whiteTimes)/len(whiteTimes)))
+print("Average black time (not using visited): " + str(sum(blackTimes)/len(blackTimes)))
