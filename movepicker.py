@@ -29,6 +29,8 @@ def getAIMove(board, depth, isWhite):
         return bestMove
 
 visited = {}
+maxVisited = {}
+minVisited = {}
 
 # White is max, black is min, returns (move, value) tuple
 def alphabeta(board, depth, alpha, beta, isWhite):
@@ -64,18 +66,25 @@ def alphabeta(board, depth, alpha, beta, isWhite):
 def alphabetaWithMove(board, depth, alpha, beta, isWhite, useVisited):
     boardFEN = board.fen()
     if depth == 0 or board.is_game_over():
+        value = 0
         if not useVisited:
             return (None, evaluate(board))
-        elif boardFEN not in visited:
-            visited[boardFEN] = (0, evaluate(board), None)
-        return (None, visited[boardFEN][1])
+        elif isWhite:
+            if boardFEN not in maxVisited:
+                maxVisited[boardFEN] = (0, evaluate(board), None)
+            value = maxVisited[boardFEN][1]
+        else:
+            if boardFEN not in minVisited:
+                minVisited[boardFEN] = (0, evaluate(board), None)
+            value = minVisited[boardFEN][1]
+        return (None, value)
     if isWhite:
         value = -float('inf')
         bestMove = None
         copy = [move for move in board.legal_moves]
-        if boardFEN in visited and visited[boardFEN][0] >= depth:
-            value = visited[boardFEN][1]
-            bestMove = visited[boardFEN][2]
+        if boardFEN in maxVisited and maxVisited[boardFEN][0] >= depth:
+            value = maxVisited[boardFEN][1]
+            bestMove = maxVisited[boardFEN][2]
         else:
             for move in copy:
                 board.push(move)
@@ -88,15 +97,15 @@ def alphabetaWithMove(board, depth, alpha, beta, isWhite, useVisited):
                 if alpha > beta:
                     break
             if useVisited:
-                visited[boardFEN] = (depth, value, bestMove)
+                maxVisited[boardFEN] = (depth, value, bestMove)
         return (bestMove, value)
     else:
         value = float('inf')
         bestMove = None
         copy = [move for move in board.legal_moves]
-        if boardFEN in visited and visited[boardFEN][0] >= depth:
-            value = visited[boardFEN][1]
-            bestMove = visited[boardFEN][2]
+        if boardFEN in minVisited and minVisited[boardFEN][0] >= depth:
+            value = minVisited[boardFEN][1]
+            bestMove = minVisited[boardFEN][2]
         else:
             for move in copy:
                 board.push(move)
@@ -109,5 +118,5 @@ def alphabetaWithMove(board, depth, alpha, beta, isWhite, useVisited):
                 if beta < alpha:
                     break
             if useVisited:
-                visited[boardFEN] = (depth, value, bestMove)
+                minVisited[boardFEN] = (depth, value, bestMove)
         return (bestMove, value)

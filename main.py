@@ -1,6 +1,6 @@
 import chess
 import time
-from movepicker import getAIMove, alphabetaWithMove, visited
+from movepicker import getAIMove, alphabetaWithMove, visited, maxVisited, minVisited
 
 board = chess.Board()
 depth = 4
@@ -27,7 +27,8 @@ while True:
     if board.is_game_over():
         print('Human wins!')
         break
-    visited = {}
+    maxVisited = {}
+    minVisited = {}
     start = time.perf_counter()
     aiMove = alphabetaWithMove(board, depth, -float('inf'), float('inf'), aiIsWhite, True)[0]
     stop = time.perf_counter()
