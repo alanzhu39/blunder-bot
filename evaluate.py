@@ -12,7 +12,7 @@ def evaluate(board):
     weights[bishops] = 0.5
     weights[rooks] = 0.5
     weights[queens] = 0.9
-    weights[kings] = 0.8
+    weights[kings] = 0.25
     weights[hangers] = 1
     for func in weights:
         evaluation += weights[func] * func(board)
@@ -202,7 +202,13 @@ def queens(board):
 
 # Various king evaluations
 def kings(board):
-    return 0
+    whitePawns = board.pieces(chess.PAWN, chess.WHITE)
+    blackPawns = board.pieces(chess.PAWN, chess.BLACK)
+    result = 0
+    # Pawn shield
+    result += len(whitePawns.intersection(board.attacks(board.king(chess.WHITE))))
+    result -= len(blackPawns.intersection(board.attacks(board.king(chess.BLACK))))
+    return result
 
 # Hanging pieces penalties
 def hangers(board):
